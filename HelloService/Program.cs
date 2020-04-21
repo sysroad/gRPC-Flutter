@@ -4,9 +4,14 @@ namespace HelloService
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
-            Console.WriteLine("Hello World!");
+            var server = new GreetServer(50051);
+            server.Start();
+
+            while(Console.ReadLine() != "exit") { }
+
+            server.ShutDown().Wait();
         }
     }
 }

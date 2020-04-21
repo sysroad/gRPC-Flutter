@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "problemMatcher": "$gcc",
+    "tasks": [
+        {
+            "label": "protobuf",
+            "type": "shell",
+            "command": "protoc",
+            "args": [
+                "--dart_out=grpc:lib/proto_generated", "-Iproto",
+                "greeter.proto"
+            ],
+            "group": "build"
+        }
+    ]
+}
