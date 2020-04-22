@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 import 'package:HelloApp/proto_generated/greeter.pb.dart';
 import 'package:HelloApp/proto_generated/greeter.pbgrpc.dart';
-import 'package:unicode/unicode.dart' as unicode;
+import 'package:HelloApp/proto_generated/randomPoints.pb.dart';
+import 'package:HelloApp/proto_generated/randomPoints.pbgrpc.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,6 +28,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String greetText = '';
+  List<Point> points;
 
   _MyHomePageState() {
     final channel = ClientChannel(
@@ -36,13 +38,20 @@ class _MyHomePageState extends State<MyHomePage> {
         credentials: ChannelCredentials.insecure(),
       ),
     );
-    final stub = GreeterClient(channel);
 
-    stub.sayHello(HelloRequest()..name = '우분투').then((value) => {
-          setState(() {
-            greetText = value.message;
-          })
-        });
+    GreeterClient(channel)
+        .sayHello(HelloRequest()..name = '우분투')
+        .then((value) => {
+              setState(() {
+                greetText = value.message;
+              })
+            });
+
+    ChartDataClient(channel)
+        .sampleData(PointsRequest())
+        .then((value) => setState(() {
+              points = value.points;
+            }));
   }
 
   @override
@@ -53,11 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Text(
           greetText,
           style: TextStyle(
-            fontFamily: 'NanumGothic',
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.bold,
-            fontSize: 32
-          ),
+              fontFamily: 'NanumGothic',
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.bold,
+              fontSize: 32),
         ),
       ),
     );

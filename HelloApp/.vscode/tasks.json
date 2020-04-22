@@ -8,7 +8,8 @@
             "command": "protoc",
             "args": [
                 "--dart_out=grpc:lib/proto_generated", "-Iproto",
-                "greeter.proto"
+                "greeter.proto",
+                "randomPoints.proto"
             ],
             "group": "build"
         }
