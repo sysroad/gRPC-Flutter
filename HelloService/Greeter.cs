@@ -25,7 +25,7 @@ namespace MyService
         {
             var reply = new PointsReply();
 
-            for (int i = 0; i < 100; ++i)
+            for (int i = 0; i < 360; ++i)
             {
                 reply.Points.Add(new Point{
                     X = i,

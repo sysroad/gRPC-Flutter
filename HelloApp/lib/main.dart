@@ -5,6 +5,7 @@ import 'package:HelloApp/proto_generated/greeter.pb.dart';
 import 'package:HelloApp/proto_generated/greeter.pbgrpc.dart';
 import 'package:HelloApp/proto_generated/randomPoints.pb.dart';
 import 'package:HelloApp/proto_generated/randomPoints.pbgrpc.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -28,6 +29,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String titleText = '';
+  List<Point> samples = [];
+  final Duration tick = Duration(milliseconds: 1);
+
   _MyHomePageState() {
     final channel = ClientChannel(
       'localhost',
@@ -44,15 +49,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 titleText = reply.message;
               })
             });
-    ChartDataClient(channel).sampleData(PointsRequest()).then((reply) => {
+
+    _fillData(channel);
+  }
+
+  void _fillData(ClientChannel channel) async {
+    await ChartDataClient(channel).sampleData(PointsRequest()).then((reply) => {
           setState(() {
             samples = reply.points;
           })
         });
+    sleep(tick);
+    _fillData(channel);
   }
-
-  String titleText = '';
-  List<Point> samples = [];
 
   @override
   Widget build(BuildContext context) {
