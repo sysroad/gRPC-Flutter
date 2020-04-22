@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:grpc/grpc.dart';
 import 'package:HelloApp/proto_generated/greeter.pb.dart';
 import 'package:HelloApp/proto_generated/greeter.pbgrpc.dart';
@@ -27,9 +28,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String greetText = '';
-  List<Point> points;
-
   _MyHomePageState() {
     final channel = ClientChannel(
       'localhost',
@@ -40,33 +38,53 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     GreeterClient(channel)
-        .sayHello(HelloRequest()..name = '우분투')
-        .then((value) => {
+        .sayHello(HelloRequest()..name = '차트 플롯 테스트')
+        .then((reply) => {
               setState(() {
-                greetText = value.message;
+                titleText = reply.message;
               })
             });
-
-    ChartDataClient(channel)
-        .sampleData(PointsRequest())
-        .then((value) => setState(() {
-              points = value.points;
-            }));
+    ChartDataClient(channel).sampleData(PointsRequest()).then((reply) => {
+          setState(() {
+            samples = reply.points;
+          })
+        });
   }
+
+  String titleText = '';
+  List<Point> samples = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Text(
-          greetText,
-          style: TextStyle(
-              fontFamily: 'NanumGothic',
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-              fontSize: 32),
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Text(
+              titleText,
+              style: TextStyle(
+                  fontFamily: 'NanumGothic',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32),
+            ),
+          ),
+          Expanded(
+            child: charts.LineChart(
+              List<charts.Series<Point, int>>()
+                ..add(
+                  charts.Series<Point, int>(
+                    data: samples,
+                    id: 'Sample Chart',
+                    domainFn: (Point p, _) => p.x,
+                    measureFn: (Point p, _) => p.y,
+                  ),
+                ),
+              animate: false,
+            ),
+          ),
+        ],
       ),
     );
   }

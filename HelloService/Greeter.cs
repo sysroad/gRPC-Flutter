@@ -28,8 +28,8 @@ namespace MyService
             for (int i = 0; i < 100; ++i)
             {
                 reply.Points.Add(new Point{
-                    X = i + 1,
-                    Y = rand.NextDouble() * 100
+                    X = i,
+                    Y = rand.NextDouble() * 30
                 });
             }
 
@@ -48,7 +48,7 @@ namespace MyService
                     Greeter.BindService(new GreeterService()),
                     ChartData.BindService(new ChartingService())
                 },
-                Ports = { new ServerPort("localhost", port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("0.0.0.0", port, ServerCredentials.Insecure) }
             };
         }
 
