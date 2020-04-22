@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Protobuf Include="proto/greeter.proto" GrpcServices="Server"/>
+    <Protobuf Include="proto/randomPoints.proto" GrpcServices="Server"/>
   </ItemGroup>
 
 </Project>

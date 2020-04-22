@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcCharting";
+
+package charting;
+
+service ChartData {
+  // Sends a random generated data
+  rpc SampleData (PointsRequest) returns (PointsReply);
+}
+
+message Point {
+    int32 x = 1;
+    double y = 2;
+}
+
+message PointsRequest {
+}
+
+message PointsReply {
+    repeated Point points = 1;
+}
